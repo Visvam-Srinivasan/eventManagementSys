@@ -27,4 +27,20 @@ const protect = async (req, res, next) => {
     }
 };
 
-module.exports = { protect };
+const restrictTo = (...allowedRoles) => {
+    return (req, res, next) => {
+        if (!allowedRoles.includes(req.user.role)) {
+            return res.status(403).json({ message: "Access Denied" });
+        }
+        next();
+    };
+};
+
+const requireApproval = (req, res, next) => {
+    if (!req.user.approved) {
+        return res.status(403).json({ message: "Accoint not approved" });
+    }
+    next();
+}
+
+module.exports = { protect, restrictTo, requireApproval };
