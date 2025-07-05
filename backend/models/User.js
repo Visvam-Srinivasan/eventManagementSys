@@ -9,11 +9,6 @@ const userSchema = new mongoose.Schema({
         enum: ['admin', 'organizer', 'participant'],
         required: true
     },
-    institution: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Institution',
-        default: null
-    },
     organizerRole: {
         type: String,
         enum: ['head', 'member', null],
