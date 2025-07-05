@@ -1,6 +1,25 @@
 const getPagination = require('../utils/pagination');
 const User = require('../models/User');
 
+
+exports.getUnapprovedOrganizationHeads = async (req, res) => {
+    try {
+        const unapprovedHeads = await User.find({ role: 'organizer', organizerRole: 'head', approved: false})
+            .select('_id name email approved organization')
+            .populate('organization', 'name')
+            .skip(skip)
+            .limit(limit);
+
+        const total = await User.countDocuments({ role: 'organizer', organizerRole: 'head', approved: false});
+
+        res.json({ total, page, limit, data: unapprovedHeads});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
+
 exports.getOrganizationHeads = async (req, res) => {
     try {
         const heads = await User.find({ role: 'organizer', organizerRole: 'head' })
