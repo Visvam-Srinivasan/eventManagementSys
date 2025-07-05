@@ -4,7 +4,8 @@ const router = express.Router();
 const {
     getOrganizationHeads,
     getOrganizationMembers,
-    getParticipants
+    getParticipants,
+    getUserById
 } = require('../controllers/adminController');
 
 const {
@@ -18,6 +19,7 @@ router.use(protect, requireApproval, restrictTo('admin'));
 router.get('/organization-heads', getOrganizationHeads);
 router.get('/organization-members', getOrganizationMembers);
 router.get('/participants', getParticipants);
+router.get('/users/:id', getUserById);
 
 
 module.exports = router;
