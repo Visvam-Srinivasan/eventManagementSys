@@ -1,6 +1,6 @@
 const getPagination = require('../utils/pagination');
 const User = require('../models/User');
-
+const Organization = require('../models/Organization');
 
 exports.getUnapprovedOrganizationHeads = async (req, res) => {
     try {
@@ -29,6 +29,23 @@ exports.getUnapprovedOrganizations = async (req, res) => {
         const total = await Organization.countDocuments({ approved: false })
 
         res.json({ total, page, limit, data: unapprovedOrganizations});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
+exports.getOrganizations = async (req, res) => {
+    try {
+        const organizations = await Organization.find()
+            .select('_id name institution')
+            .populate('organization', 'name')
+            .skip(skip)
+            .limit(limit);
+
+        const total = await organizations.countDocuments();
+
+        res.json({ total, page, limit, data: heads});
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server error' });
@@ -94,5 +111,18 @@ exports.getUserById = async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "Server error" });
+    }
+}
+
+exports.getOrganizationById = async (req, res) => {
+    try {
+        const organization = await Organization.findById(req.params.id)
+            .populate('organization', 'name email contactNumber');
+        if(!organization) return res.status(404),json({ message: 'Organization not found' });
+
+        res.json(organization);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
     }
 }
