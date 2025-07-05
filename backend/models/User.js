@@ -9,6 +9,16 @@ const userSchema = new mongoose.Schema({
         enum: ['admin', 'organizer', 'participant'],
         required: true
     },
+    contactNumber: {
+        type: String,
+        required: true,
+        validate: {
+        validator: function (v) {
+            return /^[6-9]\d{9}$/.test(v); // basic validation for Indian phone numbers
+        },
+        message: props => `${props.value} is not a valid phone number!`
+        }
+    },
     organizerRole: {
         type: String,
         enum: ['head', 'member', null],
