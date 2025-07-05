@@ -19,6 +19,21 @@ exports.getUnapprovedOrganizationHeads = async (req, res) => {
     }
 }
 
+exports.getUnapprovedOrganizations = async (req, res) => {
+    try {
+        const unapprovedOrganizations = await Organization.find({ approved: false })
+            .select('_id name institution approved')
+            .skip(skip)
+            .limit(limit);
+
+        const total = await Organization.countDocuments({ approved: false })
+
+        res.json({ total, page, limit, data: unapprovedOrganizations});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
 
 exports.getOrganizationHeads = async (req, res) => {
     try {
