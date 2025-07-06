@@ -126,3 +126,24 @@ exports.getOrganizationById = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 }
+
+exports.updateUser = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const allowedFields = ['name', 'email', 'role', 'organizerRole', 'organization', 'approved'];
+        
+        const update = {};
+        for (let key of allowedFields) {
+            if (req.body[key] !== undefined) update[key] = req.body[key];
+        }
+
+        const user = await User.findByIdAndUpdate(id, update, { new: true }).populate('organization', 'name');
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        res.json({ message: 'User updates successfully', user });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({message: 'Server error' });
+    }
+}
