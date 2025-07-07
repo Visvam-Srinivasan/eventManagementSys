@@ -29,5 +29,4 @@ router.get('/participants', getParticipants);
 router.get('/users/:id', getUserById);
 router.get('/organization/:id', getOrganizationById);
 
-
 module.exports = router;
