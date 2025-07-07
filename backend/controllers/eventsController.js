@@ -77,3 +77,32 @@ exports.archiveEvent = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 }
+
+exports.deleteEvent = async (req, res) => {
+    try {
+        const event = await Event.findByIdAndDelete(req.params.id);
+        if (!event) return res.status(404).json({ message: 'Event not found to delete' });
+
+        res.json({ message: 'Event deleted successfuly' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
+exports.publishEvent = async (req, res) => {
+    try {
+        const event = await Event.findByIdAndUpdate(
+            req.params.id,
+            { status: 'published', isArchived: false },
+            { new: true }
+        );
+
+        if (!event) return res.status(404).json({ message: 'Event not found to Publish' });
+
+        res.json({ message: 'Event published successfully', event });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Failed to publish event' });
+    }
+}
