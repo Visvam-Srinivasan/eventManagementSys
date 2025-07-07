@@ -22,7 +22,6 @@ exports.getEventsPaginated = async (req, res) => {
     }
 };
 
-
 exports.getEventById = async (req, res) => {
     try {
         const event = await Events.findById(req.params.id).populate('organization', 'name');
@@ -62,3 +61,19 @@ exports.updateEvent = async (req, res) => {
     }
 }
 
+exports.archiveEvent = async (req, res) => {
+    try {
+        const event = await Event.findByIdAndUpdate(
+            req.params.id,
+            { isArchived: true, status: 'archived'},
+            { new: true }
+        );
+        
+        if (!event) return res.status(404).json({ message: 'Event not found to archive' });
+
+        res.json({ message: 'Event archived successfully', event });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
