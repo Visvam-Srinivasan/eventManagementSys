@@ -106,3 +106,23 @@ exports.publishEvent = async (req, res) => {
         res.status(500).json({ message: 'Failed to publish event' });
     }
 }
+
+exports.getPublishedEvents = async (req, res) => {
+    const { page, limit, skip } = getPagination(req);
+
+    try {
+        const events = await Event.find({ status: 'pubished', isArchived: false })
+            .select('name summary eventDate mode posterUrl orgnaization')
+            .populate('organization', 'name')
+            .skip(skip)
+            .limit(limit)
+            .sort({ eventDate: 1});
+
+            const total = await Event.countDocuments({ status: 'published', isArchived: False });
+
+            res.json({ total, page, limit, data: events });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Failed to fetch published events' });
+    }
+}
