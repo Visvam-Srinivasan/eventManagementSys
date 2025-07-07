@@ -34,3 +34,31 @@ exports.getEventById = async (req, res) => {
         return res.status(500).json({ message: 'Server error' });
     }
 }
+
+exports.updateEvent = async (req, res) => {
+    try {
+        const allowedFields = [
+            'name', 'summary', 'mode', 'eventDate', 'venue', 'eligibility', 'teamSize',
+            'entryFee', 'registrationDeadline', 'fullEventDescription', 'prizes',
+            'tags', 'contactNumber', 'contactName', 'contactEmail', 'posterUrl', 'rules',
+            'maxParticipants'
+        ];
+
+        const updates = {};
+        for (let key of allowedFileds) {
+            if (req.body[key] != undefined) updates[key] = req.body[key];
+        }
+
+        const updatedEvent = await Event.findByIdAndUpdate(req.params.id, updates, {
+            new: true
+        });
+
+        if (!updatedEvent) return res.status(404).json({ message: 'Event not found to update' });
+
+        res.json({ message: 'Event updated successfully', event: updatedEvent });
+    } catch(err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
