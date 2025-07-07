@@ -24,7 +24,6 @@ exports.getEventsPaginated = async (req, res) => {
 
 
 exports.getEventById = async (req, res) => {
-
     try {
         const event = await Events.findById(req.params.id).populate('organization', 'name');
         if (!event) return res.status(404).json({ message: 'Event not found' });
